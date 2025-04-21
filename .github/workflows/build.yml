@@ -1,47 +1,55 @@
-name: build
+# _config.yml
 
-on:
-  push:
-    branches:
-      - master
-  workflow_dispatch: {}
-  repository_dispatch: {}
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 
-jobs:
-  build:
-    if: github.repository == 'mmistakes/minimal-mistakes'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+locale: "vi-VN"
+title: "Nguyễn Văn Hiệp"
+name: "Nguyễn Văn Hiệp"
+description: "Trang cá nhân - Kỹ sư phần mềm | Blog | Dự án"
+url: "https://NguyenVanHiep2201.github.io"
+baseurl: "" # repo gốc
 
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2'
-    - name: Setup cache for Bundler
-      id: cache
-      uses: actions/cache@v4
-      with:
-        path: |
-          docs/Gemfile.lock
-          docs/vendor/bundle
-        key: ${{ runner.os }}-bundler-${{ hashFiles('docs/Gemfile') }}
-        restore-keys: |
-          ${{ runner.os }}-bundler-
+# social links (tuỳ chỉnh sau nếu cần)
+social:
+  github: NguyenVanHiep2201
 
-    - name: Install - Bundler
-      env:
-        MAKE: make -j2
-      working-directory: docs/
-      run: |
-        bundle config set path vendor/bundle
-        bundle install --jobs=4 --retry=3
-        bundle clean
+# Build settings
+markdown: kramdown
+highlighter: rouge
 
-    - name: Update Algolia index
-      working-directory: docs/
-      run: bundle exec jekyll algolia push
-      env:
-        ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
-      continue-on-error: true
+plugins:
+  - jekyll-include-cache
+
+# Navigation
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+
+# Collections
+collections:
+  portfolio:
+    output: true
+    permalink: /:collection/:path/
+
+# Author
+author:
+  name   : "Nguyễn Văn Hiệp"
+  bio    : "Kỹ sư phần mềm, yêu thích công nghệ và chia sẻ kinh nghiệm."
+  avatar : "/assets/images/avatar.jpg"
+
+# Header navigation
+header:
+  nav:
+    - title: "Trang chủ"
+      url: "/"
+    - title: "Giới thiệu"
+      url: "/about/"
+    - title: "Bài viết"
+      url: "/blog/"
+    - title: "Dự án"
+      url: "/portfolio/"
+
